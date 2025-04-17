@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doli's Chats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Emoji Picker Library -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex h-screen antialiased text-gray-800">
+        <!-- Main Sidebar -->
+        <div class="flex flex-col w-64 bg-white border-r border-gray-200 flex-shrink-0 h-full">
+            <div class="flex items-center justify-between h-16 border-b border-gray-200 flex-shrink-0 px-4">
+                <h1 class="text-lg font-semibold text-gray-700">Doli's Chats</h1>
+                <button id="status-toggle" class="text-indigo-500 hover:text-indigo-600">
+                    <i data-lucide="circle-dot" class="h-5 w-5"></i>
+                </button>
+            </div>
+            
+            <!-- Status Section (Hidden by default) -->
+            <div id="status-section" class="hidden border-b border-gray-200">
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-sm font-semibold text-gray-600">Status</h2>
+                        <button class="text-indigo-500 hover:text-indigo-600">
+                            <i data-lucide="plus-circle" class="h-5 w-5"></i>
+                        </button>
+                    </div>
+                    <div class="flex space-x-2 overflow-x-auto pb-2">
+                        <!-- My Story -->
+                        <div class="flex flex-col items-center space-y-1 min-w-[60px]">
+                            <div class="relative">
+                                <img src="https://placehold.co/40x40/34D399/FFF?text=MY" alt="My Story" class="w-14 h-14 rounded-full ring-2 ring-indigo-500 p-0.5">
+                                <button class="absolute bottom-0 right-0 bg-indigo-500 text-white rounded-full p-1">
+                                    <i data-lucide="plus" class="h-3 w-3"></i>
+                                </button>
+                            </div>
+                            <span class="text-xs text-gray-500">My Story</span>
+                        </div>
+                        <!-- Story items will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chats Section -->
+            <div id="sidebar-list" class="flex flex-col overflow-y-auto flex-grow">
+                <!-- Groups and contacts will be populated here -->
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="flex flex-col flex-auto h-full p-0 md:p-6">
+            <div class="flex flex-col flex-auto flex-shrink-0 rounded-lg md:rounded-2xl bg-white shadow-md h-full">
+                <div id="chat-header" class="flex items-center justify-between p-4 border-b border-gray-200">
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <span id="chat-header-status" class="absolute text-gray-400 right-0 bottom-0"></span>
+                            <img id="chat-header-avatar" src="https://placehold.co/40x40/cccccc/FFF?text=?" alt="Chat Avatar" class="w-10 sm:w-12 h-10 sm:h-12 rounded-full">
+                        </div>
+                        <div class="flex flex-col leading-tight">
+                            <div class="text-lg font-semibold mt-1 flex items-center">
+                                <span id="chat-header-name" class="text-gray-700 mr-3">Select a Chat</span>
+                            </div>
+                            <span id="chat-header-onlinestatus" class="text-sm text-gray-500">Offline</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-200 ease-in-out text-gray-500 hover:bg-gray-100 focus:outline-none" title="Video Call">
+                            <i data-lucide="video" class="h-5 w-5"></i>
+                        </button>
+                        <button class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-200 ease-in-out text-gray-500 hover:bg-gray-100 focus:outline-none" title="Voice Call">
+                            <i data-lucide="phone" class="h-5 w-5"></i>
+                        </button>
+                        <!-- Background Changer -->
+                        <div class="relative">
+                            <button id="bg-changer-button" class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-200 ease-in-out text-gray-500 hover:bg-gray-100 focus:outline-none" title="Change Background">
+                                <i data-lucide="image" class="h-5 w-5"></i>
+                            </button>
+                            <div id="bg-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                                <ul class="py-1">
+                                    <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-bg="chat-background.jpg">Default Clouds</a></li>
+                                    <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-bg="chat-background1.jpg">Background 1</a></li>
+                                    <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-bg="chat-background2.jpg">Background 2</a></li>
+                                    <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-bg="chat-background3.jpg">Background 3</a></li>
+                                    <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-bg="chat-background4.jpg">Background 4</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-200 ease-in-out text-gray-500 hover:bg-gray-100 focus:outline-none">
+                            <i data-lucide="more-vertical" class="h-5 w-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="message-area" class="flex flex-col h-full overflow-y-auto p-4 space-y-4 scroll-smooth">
+                    <div class="text-center text-gray-500 mt-10">Select a chat from the left sidebar to start messaging.</div>
+                </div>
+
+                <div class="flex flex-row items-center h-16 rounded-b-lg md:rounded-b-2xl bg-white w-full px-4 border-t border-gray-200">
+                    <button class="inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-200 ease-in-out text-gray-500 hover:bg-gray-100 focus:outline-none">
+                        <i data-lucide="paperclip" class="h-5 w-5"></i>
+                    </button>
+                    <button id="emoji-button" class="ml-1 inline-flex items-center justify-center rounded-full h-10 w-10 transition duration-200 ease-in-out text-gray-500 hover:bg-gray-100 focus:outline-none">
+                        <i data-lucide="smile" class="h-5 w-5"></i>
+                    </button>
+
+                    <div class="flex-grow ml-4 relative">
+                        <!-- Emoji Picker Panel -->
+                        <div id="emoji-picker-container" class="absolute bottom-12 left-0 hidden z-20 bg-white rounded-lg shadow-lg border border-gray-200">
+                            <emoji-picker class="light" 
+                                i18n='{"search": "Search emojis...", "categories": {"smileys": "Smileys", "people": "People", "animals": "Animals", "food": "Food", "activities": "Activities", "travel": "Travel", "objects": "Objects", "symbols": "Symbols", "flags": "Flags"}}'
+                                style="width: 352px; height: 435px;">
+                            </emoji-picker>
+                        </div>
+                        <div class="relative w-full">
+                            <input
+                                type="text"
+                                id="message-input"
+                                class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
+                                placeholder="Type your message..."
+                                disabled
+                            />
+                        </div>
+                    </div>
+
+                    <div class="ml-4">
+                        <button
+                            id="send-button"
+                            class="inline-flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-4 py-2 transition duration-200 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled
+                        >
+                            <span class="font-semibold hidden sm:inline">Send</span>
+                            <i data-lucide="send" class="h-5 w-5 ml-0 sm:ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM References ---
+        const messageArea = document.getElementById('message-area');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const sidebarList = document.getElementById('sidebar-list');
+        const chatHeaderAvatar = document.getElementById('chat-header-avatar');
+        const chatHeaderName = document.getElementById('chat-header-name');
+        const chatHeaderStatus = document.getElementById('chat-header-status');
+        const chatHeaderOnlineStatus = document.getElementById('chat-header-onlinestatus');
+        const statusSection = document.getElementById('status-section');
+        const statusToggle = document.getElementById('status-toggle');
+        const bgChangerButton = document.getElementById('bg-changer-button');
+        const bgDropdown = document.getElementById('bg-dropdown');
+        const profileModal = document.getElementById('profileModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeModalButton = document.getElementById('closeModal');
+
+        // --- Stories Data ---
+        const stories = [
+            { id: 'mumma', name: 'Mumma', avatar: 'WhatsApp Image 2024-07-30 at 07.20.34_0d0e670a.jpg', time: '2m', viewed: false },
+            { id: 'tanu', name: 'Tanu', avatar: 'https://placehold.co/40x40/F59E0B/FFF?text=TB', time: '5m', viewed: true },
+            { id: 'drashti', name: 'Drashti', avatar: 'https://placehold.co/40x40/6366F1/FFF?text=DB', time: '15m', viewed: false },
+            { id: 'aesha', name: 'Aesha', avatar: 'https://placehold.co/40x40/8B5CF6/FFF?text=AE', time: '1h', viewed: true },
+            { id: 'isha', name: 'Isha', avatar: 'https://placehold.co/40x40/10B981/FFF?text=IS', time: '2h', viewed: false }
+        ];
+
+        // --- Bot Data ---
+        const bots = [
+            // Groups
+            { id: 'weird', name: 'Herd of Weirdos', avatar: 'https://placehold.co/40x40/EC4899/FFF?text=HW', online: true, description: 'A group of unique individuals', color: 'EC4899', isGroup: true, members: 5 },
+            { id: 'ldit', name: 'LDIT Students', avatar: 'https://placehold.co/40x40/6366F1/FFF?text=LD', online: true, description: 'Online', color: '6366F1', isGroup: true, members: 120 },
+            { id: 'ldofficial', name: 'LD Official', avatar: 'https://placehold.co/40x40/14B8A6/FFF?text=LO', online: false, description: 'Last seen 5 minutes ago', color: '14B8A6', isGroup: true, members: 15 },
+            
+            // Individual Users
+            { id: 'echo', name: 'Mumma', avatar: 'WhatsApp Image 2024-07-30 at 07.20.34_0d0e670a.jpg', online: true, description: 'Repeats what you say', color: '34D399', isGroup: false },
+            { id: 'info', name: 'Tanu', avatar: 'https://placehold.co/40x40/F59E0B/FFF?text=TB', online: true, description: 'Gives basic info', color: 'F59E0B', isGroup: false },
+            { id: 'time', name: 'Drashti', avatar: 'https://placehold.co/40x40/6366F1/FFF?text=DB', online: false, description: 'Tells the current time', color: '6366F1', isGroup: false },
+            { id: 'aesha', name: 'Aesha', avatar: 'https://placehold.co/40x40/8B5CF6/FFF?text=AE', online: true, description: 'Online', color: '8B5CF6', isGroup: false },
+            { id: 'isha', name: 'Isha', avatar: 'https://placehold.co/40x40/10B981/FFF?text=IS', online: false, description: 'Last seen 2 hours ago', color: '10B981', isGroup: false },
+            { id: 'papa', name: 'Papa', avatar: 'https://placehold.co/40x40/EF4444/FFF?text=PA', online: true, description: 'Online', color: 'EF4444', isGroup: false },
+            { id: 'jinesh', name: 'Jinesh', avatar: 'https://placehold.co/40x40/3B82F6/FFF?text=JI', online: false, description: 'Last seen yesterday', color: '3B82F6', isGroup: false },
+            { id: 'meera', name: 'Meera', avatar: 'https://placehold.co/40x40/F59E0B/FFF?text=ME', online: true, description: 'Online', color: 'F59E0B', isGroup: false },
+            { id: 'shailee', name: 'Shailee', avatar: 'https://placehold.co/40x40/EC4899/FFF?text=SH', online: false, description: 'Last seen 1 hour ago', color: 'EC4899', isGroup: false }
+        ];
+
+        let currentChatBot = null;
+        let botReplyTimeout = null;
+
+        // --- Functions ---
+
+        /**
+         * Populates the stories section
+         */
+        function populateStories() {
+            const storiesContainer = document.querySelector('#status-section .flex.space-x-2.overflow-x-auto');
+            if (!storiesContainer) return; // Guard clause if container not found
+            
+            // Clear existing stories
+            storiesContainer.innerHTML = '';
+            
+            // Add My Story first
+            const myStoryItem = document.createElement('div');
+            myStoryItem.classList.add('flex', 'flex-col', 'items-center', 'space-y-1', 'min-w-[60px]', 'cursor-pointer');
+            
+            const myStoryContainer = document.createElement('div');
+            myStoryContainer.classList.add('relative');
+            
+            const myStoryImg = document.createElement('img');
+            myStoryImg.src = 'https://placehold.co/40x40/34D399/FFF?text=MY';
+            myStoryImg.alt = 'My Story';
+            myStoryImg.classList.add('w-14', 'h-14', 'rounded-full', 'ring-2', 'ring-indigo-500', 'p-0.5');
+            
+            const addButton = document.createElement('button');
+            addButton.classList.add('absolute', 'bottom-0', 'right-0', 'bg-indigo-500', 'text-white', 'rounded-full', 'p-1');
+            addButton.innerHTML = '<i data-lucide="plus" class="h-3 w-3"></i>';
+            
+            const myStoryName = document.createElement('span');
+            myStoryName.classList.add('text-xs', 'text-gray-500');
+            myStoryName.textContent = 'My Story';
+            
+            myStoryContainer.appendChild(myStoryImg);
+            myStoryContainer.appendChild(addButton);
+            myStoryItem.appendChild(myStoryContainer);
+            myStoryItem.appendChild(myStoryName);
+            
+            storiesContainer.appendChild(myStoryItem);
+            
+            // Add other stories
+            stories.forEach(story => {
+                const storyItem = document.createElement('div');
+                storyItem.classList.add('flex', 'flex-col', 'items-center', 'space-y-1', 'min-w-[60px]', 'cursor-pointer');
+                
+                const avatarContainer = document.createElement('div');
+                avatarContainer.classList.add('relative');
+                
+                const img = document.createElement('img');
+                img.src = story.avatar;
+                img.alt = story.name;
+                img.classList.add('w-14', 'h-14', 'rounded-full', 'ring-2', story.viewed ? 'ring-gray-300' : 'ring-indigo-500', 'p-0.5');
+                
+                const timeSpan = document.createElement('span');
+                timeSpan.classList.add('text-xs', 'text-gray-500');
+                timeSpan.textContent = story.name;
+                
+                avatarContainer.appendChild(img);
+                storyItem.appendChild(avatarContainer);
+                storyItem.appendChild(timeSpan);
+                
+                storiesContainer.appendChild(storyItem);
+            });
+            
+            // Reinitialize Lucide icons for the new elements
+            lucide.createIcons();
+        }
+
+        /**
+         * Toggles the status section visibility
+         */
+        function toggleStatusSection() {
+            statusSection.classList.toggle('hidden');
+            // Update the toggle button icon
+            const icon = statusToggle.querySelector('i');
+            if (statusSection.classList.contains('hidden')) {
+                icon.setAttribute('data-lucide', 'circle-dot');
+            } else {
+                icon.setAttribute('data-lucide', 'circle');
+                // Repopulate stories when section is shown
+                populateStories();
+            }
+            lucide.createIcons();
+        }
+
+        /**
+         * Populates the sidebar with bot list items.
+         */
+        function populateSidebar() {
+            sidebarList.innerHTML = '';
+            
+            // Add Groups Section
+            const groupsSection = document.createElement('div');
+            groupsSection.classList.add('px-4', 'py-2', 'text-xs', 'font-semibold', 'text-gray-500', 'uppercase');
+            groupsSection.textContent = 'Groups';
+            sidebarList.appendChild(groupsSection);
+
+            // Add Groups
+            bots.filter(bot => bot.isGroup).forEach(bot => {
+                const item = createSidebarItem(bot);
+                sidebarList.appendChild(item);
+            });
+
+            // Add Contacts Section
+            const contactsSection = document.createElement('div');
+            contactsSection.classList.add('px-4', 'py-2', 'text-xs', 'font-semibold', 'text-gray-500', 'uppercase', 'mt-4');
+            contactsSection.textContent = 'Contacts';
+            sidebarList.appendChild(contactsSection);
+
+            // Add Individual Contacts
+            bots.filter(bot => !bot.isGroup).forEach(bot => {
+                const item = createSidebarItem(bot);
+                sidebarList.appendChild(item);
+            });
+        }
+
+        /**
+         * Adds a message bubble to the chat area.
+         * @param {string} messageText - The text content of the message.
+         * @param {'sent' | 'received'} type - The type of message.
+         * @param {object | null} senderBot - The bot object if it's a received message.
+         */
+        function addMessage(messageText, type = 'sent', senderBot = null) {
+            if (!messageText || !messageText.trim()) return; // Don't add empty messages
+
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('flex', 'items-end', 'mb-4'); // Added margin-bottom
+
+            const messageContentWrapper = document.createElement('div');
+            messageContentWrapper.classList.add('flex', 'flex-col', 'space-y-1', 'text-sm', 'max-w-xs', 'mx-2');
+
+            const messageBubble = document.createElement('div');
+            const messageSpan = document.createElement('span');
+            messageSpan.classList.add('px-4', 'py-2', 'rounded-lg', 'inline-block', 'shadow');
+            messageSpan.textContent = messageText; // Use textContent for security
+
+            messageBubble.appendChild(messageSpan);
+            messageContentWrapper.appendChild(messageBubble);
+
+            if (type === 'sent') {
+                // Style for sent messages
+                messageWrapper.classList.add('justify-end');
+                messageContentWrapper.classList.add('order-1', 'items-end');
+                messageSpan.classList.add('rounded-br-none', 'chat-bubble-sent', 'text-gray-800');
+            } else {
+                // Style for received messages
+                messageWrapper.classList.add('justify-start');
+                messageContentWrapper.classList.add('order-2', 'items-start');
+                messageSpan.classList.add('rounded-bl-none', 'chat-bubble-received', 'bg-white'); // Ensure white background
+
+                // Add avatar for received messages
+                if (senderBot) {
+                    const avatar = document.createElement('img');
+                    // ***** UPDATED: Use actual avatar for small chat bubble image *****
+                    if (senderBot.id === 'echo') { // Check if it's Mumma
+                         avatar.src = senderBot.avatar; // Use the uploaded image file
+                    } else {
+                         // Use placeholder for other bots
+                         avatar.src = `https://placehold.co/24x24/${senderBot.color}/FFF?text=${senderBot.name.substring(0,1)}${senderBot.name.split(' ')[1]?.[0] ?? ''}`;
+                    }
+                    avatar.alt = `${senderBot.name}'s avatar`;
+                    avatar.classList.add('w-6', 'h-6', 'rounded-full', 'order-1');
+                    messageWrapper.appendChild(avatar);
+                }
+            }
+
+            messageWrapper.appendChild(messageContentWrapper);
+            messageArea.appendChild(messageWrapper);
+
+            // Scroll to the bottom of the message area smoothly
+            messageArea.scrollTo({ top: messageArea.scrollHeight, behavior: 'smooth' });
+        }
+
+        /**
+         * Simulates a reply from the current bot.
+         * @param {string} userMessage - The message sent by the user.
+         */
+        function simulateBotResponse(userMessage) {
+             if (!currentChatBot || !currentChatBot.online) return; // Only online bots reply
+
+             // Clear any previous pending reply
+             if (botReplyTimeout) clearTimeout(botReplyTimeout);
+
+             botReplyTimeout = setTimeout(() => {
+                 let reply = "Sorry, I didn't understand that.";
+                 switch (currentChatBot.id) {
+                     case 'echo': // Mumma
+                         reply = `Echo: ${userMessage}`; // Keeping original bot logic for demo
+                         break;
+                     case 'info': // Tanu
+                         if (userMessage.toLowerCase().includes('hello') || userMessage.toLowerCase().includes('hi')) {
+                             reply = `Hello there! I am ${currentChatBot.name}.`;
+                         } else if (userMessage.toLowerCase().includes('help')) {
+                             reply = "I can provide basic information. Try asking 'hello'.";
+                         } else {
+                              reply = "I have limited information. Ask 'hello' or 'help'.";
+                         }
+                         break;
+                     case 'time': // Drashti
+                          reply = "I seem to be offline right now.";
+                          break;
+                 }
+                 addMessage(reply, 'received', currentChatBot);
+             }, 800 + Math.random() * 500); // Add a small delay
+        }
+
+        /**
+         * Handles sending a user message and triggering bot response.
+         */
+        function sendMessage() {
+            const messageText = messageInput.value;
+            if (!messageText.trim() || !currentChatBot) return;
+
+            addMessage(messageText, 'sent');
+            simulateBotResponse(messageText);
+
+            // Clear the input field
+            messageInput.value = '';
+            messageInput.focus(); // Keep focus on input
+        }
+
+        /**
+         * Switches the active chat to the selected bot.
+         * @param {string} botId - The ID of the bot to switch to.
+         */
+        function switchChat(botId) {
+            const selectedBot = bots.find(bot => bot.id === botId);
+            if (!selectedBot) return;
+
+            currentChatBot = selectedBot;
+
+            // Update header
+            chatHeaderAvatar.src = currentChatBot.avatar; 
+            chatHeaderAvatar.alt = `${currentChatBot.name}'s Avatar`;
+            chatHeaderAvatar.onclick = () => openProfileModal(currentChatBot.avatar);
+            chatHeaderAvatar.classList.add('cursor-pointer');
+
+            chatHeaderName.textContent = currentChatBot.name;
+            chatHeaderOnlineStatus.textContent = currentChatBot.online ? 'Online' : 'Offline';
+            chatHeaderStatus.innerHTML = currentChatBot.online
+                ? `<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" class="text-green-500"><circle cx="10" cy="10" r="10"></circle></svg>`
+                : `<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" class="text-gray-400"><circle cx="10" cy="10" r="10"></circle></svg>`;
+
+
+            // Clear message area and add welcome message
+            messageArea.innerHTML = ''; // Clear previous messages
+            addMessage(`You are now chatting with ${currentChatBot.name}. ${currentChatBot.description}.`, 'received', currentChatBot);
+            if (!currentChatBot.online) {
+                 addMessage(`${currentChatBot.name} is currently offline.`, 'received', currentChatBot);
+            }
+
+
+            // Enable input/send button
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+            messageInput.placeholder = `Message ${currentChatBot.name}...`;
+
+            // Update active state in sidebar
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.botId === botId) {
+                    item.classList.add('active');
+                }
+            });
+
+             // Clear any pending bot reply from the previous chat
+             if (botReplyTimeout) clearTimeout(botReplyTimeout);
+
+            messageInput.focus();
+        }
+
+        function createSidebarItem(bot) {
+            const item = document.createElement('button');
+            item.classList.add('sidebar-item', 'flex', 'items-center', 'w-full', 'px-4', 'py-3', 'hover:bg-gray-100', 'focus:outline-none', 'transition', 'duration-150', 'ease-in-out');
+            item.dataset.botId = bot.id;
+
+            const avatarImg = document.createElement('img');
+            avatarImg.src = bot.avatar;
+            avatarImg.alt = bot.name;
+            avatarImg.classList.add('w-10', 'h-10', 'rounded-full', 'mr-3', 'flex-shrink-0', 'cursor-pointer');
+            avatarImg.onerror = function() {
+                this.src = `https://placehold.co/40x40/${bot.color}/FFF?text=${bot.name.substring(0,1)}${bot.name.split(' ')[1]?.[0] ?? ''}`;
+                this.alt = `${bot.name} (Image Error)`;
+            };
+            avatarImg.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openProfileModal(bot.avatar);
+            });
+
+            const textWrapper = document.createElement('div');
+            textWrapper.classList.add('flex-grow', 'text-left');
+
+            const nameDiv = document.createElement('div');
+            nameDiv.classList.add('font-semibold', 'text-sm', 'text-gray-700');
+            nameDiv.textContent = bot.name;
+
+            const statusDiv = document.createElement('div');
+            statusDiv.classList.add('text-xs', bot.online ? 'text-green-600' : 'text-gray-500');
+            
+            if (bot.isGroup) {
+                statusDiv.textContent = `${bot.members} members • ${bot.online ? 'Online' : bot.description}`;
+            } else {
+                statusDiv.textContent = bot.online ? 'Online' : bot.description;
+            }
+
+            textWrapper.appendChild(nameDiv);
+            textWrapper.appendChild(statusDiv);
+            item.appendChild(avatarImg);
+            item.appendChild(textWrapper);
+
+            item.addEventListener('click', () => switchChat(bot.id));
+            return item;
+        }
+
+        /**
+         * Sets the chat background image.
+         * @param {string} imageUrl - The URL of the background image.
+         */
+        function setChatBackground(imageUrl) {
+            messageArea.style.backgroundImage = `url('${imageUrl}')`;
+        }
+
+        /**
+         * Toggles the background changer dropdown visibility.
+         */
+        function toggleBackgroundDropdown() {
+            bgDropdown.classList.toggle('hidden');
+        }
+
+        /**
+         * Opens the profile picture modal.
+         * @param {string} imageUrl - The URL of the image to display.
+         */
+        function openProfileModal(imageUrl) {
+            if (!imageUrl || imageUrl.startsWith('https://placehold.co')) return; // Don't open for placeholders
+            modalImage.src = imageUrl;
+            profileModal.classList.remove('hidden');
+            lucide.createIcons(); // Ensure close icon is rendered
+        }
+
+        /**
+         * Closes the profile picture modal.
+         */
+        function closeProfileModal() {
+            profileModal.classList.add('hidden');
+            modalImage.src = ''; // Clear image src
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateSidebar();
+            // Set default background on load (already set by CSS, but good practice)
+            setChatBackground('chat-background.jpg'); 
+            lucide.createIcons(); // Initialize icons after DOM is ready
+        });
+
+        // Event listeners
+        statusToggle.addEventListener('click', toggleStatusSection);
+        
+        bgChangerButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent click from bubbling up to the document
+            toggleBackgroundDropdown();
+        });
+
+        // Event listener for background selection
+        bgDropdown.addEventListener('click', (event) => {
+            if (event.target.tagName === 'A') {
+                event.preventDefault();
+                const selectedBg = event.target.getAttribute('data-bg');
+                if (selectedBg) {
+                    setChatBackground(selectedBg);
+                    bgDropdown.classList.add('hidden'); // Hide dropdown after selection
+                }
+            }
+        });
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', (event) => {
+            if (!bgChangerButton.contains(event.target) && !bgDropdown.contains(event.target)) {
+                bgDropdown.classList.add('hidden');
+            }
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter' && !sendButton.disabled) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Close modal listeners
+        closeModalButton.addEventListener('click', closeProfileModal);
+        profileModal.addEventListener('click', (event) => {
+            // Close if clicked on the background overlay, not the image itself
+            if (event.target === profileModal) {
+                closeProfileModal();
+            }
+        });
+
+        // Scroll message area to bottom initially
+        window.onload = () => {
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+    </script>
+
+    <!-- Profile Picture Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="relative bg-white p-4 rounded-lg max-w-md max-h-[80vh]">
+            <button id="closeModal" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+                <i data-lucide="x" class="h-6 w-6"></i>
+            </button>
+            <img id="modalImage" src="" alt="Full Profile Picture" class="max-w-full max-h-[70vh] object-contain">
+        </div>
+    </div>
+
+</body>
+</html>

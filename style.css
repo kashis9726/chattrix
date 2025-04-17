@@ -1,0 +1,56 @@
+/* Use Inter font */
+body {
+    font-family: 'Inter', sans-serif;
+}
+/* Simple scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #bdbdbd;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+/* Ensure body takes full height */
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Prevent body scroll */
+}
+/* Chat area background */
+#message-area {
+    background-image: url('chat-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+/* Chat bubble styling */
+.chat-bubble-sent {
+    background-color: #dcf8c6; /* WhatsApp-like green */
+    align-self: flex-end;
+}
+.chat-bubble-received {
+    background-color: #ffffff; /* White */
+    align-self: flex-start;
+}
+/* Active chat style */
+.sidebar-item.active {
+    background-color: #e5e7eb; /* Light gray background */
+}
+/* Ensure avatars are displayed correctly */
+img {
+   object-fit: cover; /* Prevent distortion */
+}
+/* Profile Modal Styling */
+#profileModal {
+    display: flex; /* Use flex for centering */
+}
+#profileModal.hidden {
+    display: none;
+} 
